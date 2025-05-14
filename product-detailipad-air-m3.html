@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Izone - iPad Air M3</title>
+  <link rel="stylesheet" href="./Style/Product.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="icon" type="image/png" href="./images/favicon.png">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <a href="index.html"><img src="./images/LOGOTHUONGHIEU.png" alt="Izone Logo"></a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="iphone.html">iPhone</a></li>
+          <li><a href="ipad.html">iPad</a></li>
+          <li><a href="mac.html">Mac</a></li>
+          <li><a href="watch.html">Watch</a></li>
+          <li><a href="accessories.html">Phụ kiện</a></li>
+        </ul>
+      </nav>
+      <div class="header-right">
+        <a href="cart.html" class="cart-icon" id="cart-link" data-count="0"><i class="bi bi-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="product-detail">
+    <div class="product-container">
+      <div class="product-gallery">
+        <img id="main-image" src="./images/ipad-air-m2-11-inch-wifi-purple-thumb-650x650.png" alt="iPad Air M3">
+      </div>
+
+      <div class="product-info">
+        <h1>iPad Air M3</h1>
+        <p class="location">Giá và khuyến mãi tại: <strong>Hồ Chí Minh</strong></p>
+
+        <div class="variant-group">
+          <p>Dung lượng</p>
+          <div class="variant-options" id="storage-options">
+            <button onclick="selectStorage(0)" class="active">128GB</button>
+            <button onclick="selectStorage(1)">256GB</button>
+          </div>
+        </div>
+
+        <div class="variant-group">
+          <p>Màu: <span id="color-label">Tím</span></p>
+          <div class="variant-options color-options" id="color-options">
+            <span class="color active" style="background-color: #b68edf;" onclick="changeColor(0)"></span>
+            <span class="color" style="background-color: #4f7fe4;" onclick="changeColor(1)"></span>
+            <span class="color" style="background-color: #f5f5dc;" onclick="changeColor(2)"></span>
+            <span class="color" style="background-color: #999;" onclick="changeColor(3)"></span>
+          </div>
+        </div>
+
+        <p class="price" id="product-price">22.690.000₫</p>
+        <p class="promo">Thu cũ đổi mới trợ giá 2 triệu</p>
+        <button class="buy-btn" onclick="addToCart()">Thêm vào giỏ hàng</button>
+      </div>
+    </div>
+
+    <section class="product-details">
+      <h2>Thông số kỹ thuật</h2>
+      <ul>
+        <li>Màn hình: 11" Liquid Retina</li>
+        <li>Chip: Apple M3 mạnh mẽ</li>
+        <li>Camera: 12MP, Center Stage</li>
+        <li>Touch ID, Apple Pencil Pro</li>
+        <li>Pin: đến 10 tiếng, sạc nhanh USB-C</li>
+        <li>Thiết kế mỏng nhẹ, nhiều màu trẻ trung</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <img src="./images/LOGOTHUONGHIEU.png" alt="Logo Izone">
+      <p>&copy; 2025 Izone. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentStorage = 0;
+    let currentColor = 0;
+
+    const colorNames = ["Tím", "Xanh dương", "Trắng (Starlight)", "Đen-Trắng"];
+    const imageMap = [
+      "./images/ipad-air-m2-11-inch-wifi-purple-thumb-650x650.png",
+      "./images/ipad-air-m3-11-inch-wifi-blue-thumb-650x650.png",
+      "./images/ipad-air-m2-11-inch-wifi-starlight-thumb-650x650.png",
+      "./images/ipad-air-m2-11-inch-wifi-gray-thumb-650x650.png"
+    ];
+
+    const priceMap = [
+      ["22.690.000₫", "22.990.000₫", "23.290.000₫", "23.490.000₫"],
+      ["25.490.000₫", "25.790.000₫", "26.090.000₫", "26.290.000₫"]
+    ];
+
+    function selectStorage(index) {
+      currentStorage = index;
+      document.querySelectorAll("#storage-options button").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll("#storage-options button")[index].classList.add("active");
+      updatePrice();
+    }
+
+    function changeColor(index) {
+      document.querySelectorAll("#color-options .color").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll("#color-options .color")[index].classList.add("active");
+
+      currentColor = index;
+      document.getElementById("main-image").src = imageMap[index];
+      document.getElementById("color-label").innerText = colorNames[index];
+      updatePrice();
+    }
+
+    function updatePrice() {
+      document.getElementById("product-price").innerText = priceMap[currentStorage][currentColor];
+    }
+
+    function addToCart() {
+      const product = {
+        name: `iPad Air M3 - ${["128GB", "256GB"][currentStorage]} - ${colorNames[currentColor]}`,
+        price: document.getElementById("product-price").innerText,
+        quantity: 1,
+        image: imageMap[currentColor]
+      };
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existing = cart.find(item => item.name === product.name && item.price === product.price);
+      if (existing) existing.quantity += 1;
+      else cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      alert("Đã thêm vào giỏ hàng!");
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cart-link").setAttribute("data-count", total);
+    }
+
+    updateCartCount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thanh toán - HuyIphone</title>
+  <link rel="stylesheet" href="./Style/main.css">
+  <link rel="stylesheet" href="./Style/cart.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="icon" type="image/png" href="./images/favicon.png">
+  <link rel="stylesheet" href="./Style/checkout.css">
+</head>
+<body>
+  <div class="checkout-container">
+    <h1>Thanh toán đơn hàng</h1>
+
+    <h2>Thông tin đơn hàng</h2>
+    <ul class="order-items" id="order-items"></ul>
+    <p id="order-total"></p>
+
+    <h2>Thông tin người nhận</h2>
+    <form id="checkout-form">
+      <div class="form-group">
+        <i class="bi bi-person-fill"></i>
+        <input type="text" id="name" placeholder="Họ tên" required>
+      </div>
+      <div class="form-group">
+        <i class="bi bi-telephone-fill"></i>
+        <input type="tel" id="phone" placeholder="Số điện thoại" required>
+      </div>
+      <div class="form-group">
+        <i class="bi bi-geo-alt-fill"></i>
+        <textarea id="address" rows="3" placeholder="Địa chỉ giao hàng" required></textarea>
+      </div>
+      <button type="submit">Xác nhận thanh toán</button>
+    </form>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const orderItemsEl = document.getElementById("order-items");
+    const orderTotalEl = document.getElementById("order-total");
+
+    function parsePrice(priceString) {
+      return Number(priceString.replace(/[^\d]/g, ""));
+    }
+
+    function renderOrder() {
+      let total = 0;
+      orderItemsEl.innerHTML = "";
+
+      if (cart.length === 0) {
+        orderItemsEl.innerHTML = "<li>Giỏ hàng trống.</li>";
+        orderTotalEl.innerText = "";
+        return;
+      }
+
+      cart.forEach(item => {
+        const itemTotal = parsePrice(item.price) * item.quantity;
+        total += itemTotal;
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${item.name} x${item.quantity}</span><strong>${itemTotal.toLocaleString()}₫</strong>`;
+        orderItemsEl.appendChild(li);
+      });
+
+      orderTotalEl.innerText = `Tổng cộng: ${total.toLocaleString()}₫`;
+    }
+
+    document.getElementById("checkout-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Đơn hàng đã được xác nhận!\nCảm ơn bạn đã mua hàng.");
+      localStorage.removeItem("cart");
+      window.location.href = "index.html";
+    });
+
+    renderOrder();
+  </script>
+</body>
+</html>
